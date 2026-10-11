@@ -1,0 +1,46 @@
+<?xml version="1.0"?>
+<robot name="merobot" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <!-- Chassis dimensions (meters, kilograms) -->
+  <xacro:property name="base_length" value="0.3"/>
+  <xacro:property name="base_width" value="0.3"/>
+  <xacro:property name="base_height" value="0.1"/>
+  <xacro:property name="base_mass" value="2.0"/>
+    <material name="gray">
+    <color rgba="0.6 0.6 0.6 1.0"/>
+  </material>
+
+  <link name="base_link">
+
+    <visual>
+      <geometry>
+        <box size="${base_length} ${base_width} ${base_height}"/>
+      </geometry>
+      <material name="gray"/>
+    </visual>
+
+    <collision>
+      <geometry>
+        <box size="${base_length} ${base_width} ${base_height}"/>
+      </geometry>
+    </collision>
+
+    <inertial>
+      <mass value="${base_mass}"/>
+      <inertia
+        ixx="${base_mass/12.0*(base_width*base_width + base_height*base_height)}"
+        iyy="${base_mass/12.0*(base_length*base_length + base_height*base_height)}"
+        izz="${base_mass/12.0*(base_length*base_length + base_width*base_width)}"
+        ixy="0" ixz="0" iyz="0"/>
+    </inertial>
+
+  </link>
+  <link name="base_footprint"/>
+
+  <joint name="base_footprint_joint" type="fixed">
+    <parent link="base_footprint"/>
+    <child link="base_link"/>
+    <origin xyz="0 0 ${base_height/2}" rpy="0 0 0"/>
+  </joint>
+</robot>
+
