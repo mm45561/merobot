@@ -11,6 +11,8 @@ from launch_ros.parameter_descriptions import ParameterValue
 def generate_launch_description():
     pkg_share = get_package_share_directory('merobot_description')
     xacro_file = os.path.join(pkg_share, 'urdf', 'merobot.urdf.xacro')
+    world_file = os.path.join(pkg_share, 'worlds', 'obstacles.sdf')
+    rviz_file = os.path.join(pkg_share, 'rviz', 'display.rviz')
 
     robot_description = ParameterValue(
         Command(['xacro ', xacro_file]), value_type=str)
@@ -18,7 +20,7 @@ def generate_launch_description():
     gazebo = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(os.path.join(
             get_package_share_directory('ros_gz_sim'), 'launch', 'gz_sim.launch.py')),
-        launch_arguments={'gz_args': 'empty.sdf -r'}.items())
+        launch_arguments={'gz_args': world_file + ' -r'}.items())
 
     return LaunchDescription([
         gazebo,
@@ -33,7 +35,7 @@ def generate_launch_description():
             arguments=['-topic', 'robot_description',
                        '-name', 'merobot',
                        '-z', '0.1']),
-                               Node(
+        Node(
             package='ros_gz_bridge',
             executable='parameter_bridge',
             arguments=[
@@ -42,5 +44,11 @@ def generate_launch_description():
                 '/odom@nav_msgs/msg/Odometry[gz.msgs.Odometry',
                 '/tf@tf2_msgs/msg/TFMessage[gz.msgs.Pose_V',
                 '/joint_states@sensor_msgs/msg/JointState[gz.msgs.Model',
+                '/scan@sensor_msgs/msg/LaserScan[gz.msgs.LaserScan',
             ]),
+        Node(
+            package='rviz2',
+            executable='rviz2',
+            arguments=['-d', rviz_file],
+            parameters=[{'use_sim_time': True}]),
     ])
