@@ -12,7 +12,7 @@ def generate_launch_description():
     pkg_share = get_package_share_directory('merobot_description')
     xacro_file = os.path.join(pkg_share, 'urdf', 'merobot.urdf.xacro')
     world_file = os.path.join(pkg_share, 'worlds', 'obstacles.sdf')
-    rviz_file = os.path.join(pkg_share, 'rviz', 'display.rviz')
+    rviz_file = os.path.join(pkg_share, 'rviz', 'sim.rviz')
 
     robot_description = ParameterValue(
         Command(['xacro ', xacro_file]), value_type=str)
